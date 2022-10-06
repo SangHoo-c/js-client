@@ -1,40 +1,53 @@
 const container = document.getElementById("root");
 const ajax = new XMLHttpRequest();
-const content = document.createElement('div');
+const content = document.createElement("div");
 const NEWS_URL = "https://api.hnpwa.com/v0/news/1.json";
 const CONTENT_URL = "https://api.hnpwa.com/v0/item/@id.json";
 
-ajax.open("GET", NEWS_URL, false);
-ajax.send();
+function getData(url) {
+  ajax.open("GET", url, false);
+  ajax.send();
 
-const newsFeed = JSON.parse(ajax.response);
+  return JSON.parse(ajax.response);
+}
+
+const newsFeed = getData(NEWS_URL);
 const ul = document.createElement("ul");
 
 window.addEventListener("hashchange", () => {
   const id = location.hash.substring(1);
 
-  ajax.open("GET", CONTENT_URL.replace("@id", id), false);
-  ajax.send();
+  const newsContent = getData(CONTENT_URL.replace("@id", id));
+  const title = document.createElement("h1");
 
-  const newsContent = JSON.parse(ajax.response);
+  container.innerHTML = `
+   <h1>${newsContent.title}{</h1>
 
-  const title = document.createElement('h1');
+   <div>
+    <a href = "#"> 글 목록으로
+    
+    </a>
+   </div>
+  `;
   title.innerHTML = newsContent.title;
 
   content.appendChild(title);
   console.log(newsContent);
 });
 
+// 만들고 있는 구조를 한눈에 파악할 수 있는 방법
 for (let i = 0; i < 10; i++) {
-  const li = document.createElement("li");
-  const a = document.createElement("a");
+  const div = document.createElement("div");
 
-  a.href = `#${newsFeed[i].id}`;
+  div.innerHTML = `
+  <li>
+    <a href="#${newsFeed[i].id}"> 
+    ${newsFeed[i].title} (${newsFeed[i].comments_count})
+    </a>
+  </li>
+  `;
 
-  a.innerHTML = `${newsFeed[i].title} (${newsFeed[i].comments_count})`;
-
-  li.appendChild(a);
-  ul.appendChild(li);
+  ul.appendChild(div.children[0]);
 }
 
 container.appendChild(ul);

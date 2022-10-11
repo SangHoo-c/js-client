@@ -51,11 +51,11 @@ function newsFeed() {
       </div>
     </div>
   `;
-  console.log(newsFeed);
+
   if (newsFeed.length === 0) {
     newsFeed = store.feeds = makeFeeds(getData(NEWS_URL));
   }
-  console.log(newsFeed);
+
   for (let i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
     newsList.push(`
       <div class="p-6 ${newsFeed[i].read ? 'bg-red-500' : 'bg-white'} mt-6 rounded-lg shadow-md transition-colors duration-500 hover:bg-green-100">
